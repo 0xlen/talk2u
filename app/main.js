@@ -1,4 +1,5 @@
 var FirstComponent = require('./ShowTimeComponenet');
+var MessageBox = require('./MessageBox');
 var KeyPanel = require('./KeyPanel');
 var InputBox = require('./InputBox');
 
@@ -9,22 +10,38 @@ setInterval(function() {
     );
 }, 500);
 
+var table = null;
+$(function() {
+    $.ajax({
+        url: './table.json',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            table = data;
+        }
+    });
+});
+
 var App = React.createClass({
     getInitialState: function() {
         return {
-            userInput: ''
+            userInput: '',
+            message: ''
         };
     },
     handleInputKey: function(e) {
         if (e.target.value != 'x') {
+            var newKey = this.state.userInput + e.target.value;
             this.setState({
-                userInput: this.state.userInput + e.target.value
+                userInput: newKey,
+                message: table['sentences'][newKey]
             });
         }
     },
     handleClearInput: function(e) {
         this.setState({
-            userInput: ''
+            userInput: '',
+            message: ''
         });
     },
     render: function() {
@@ -32,6 +49,7 @@ var App = React.createClass({
             <div>
                 <p className="row"><InputBox value={this.state.userInput} clearInput={this.handleClearInput} /></p>
                 <p className="row"><KeyPanel handleClick={this.handleInputKey} /></p>
+                <p className="row"><MessageBox message={this.state.message} /></p>
             </div>
         );
     }
