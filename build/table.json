@@ -1,17 +1,138 @@
 {
     "zh_sentences": {
+        "11": "讓我想一想",
+        "12": "請幫我叫媽媽",
+
+        "21": "讓我休息一下",
+        "22": "我想喝水, 杯子在輪椅後面",
+
+        "31": "請幫我綁安全帶",
+        "32": "可以這樣做嗎?",
+
+        "41": "現在幾點?",
+        "42": "我可以加你的Facebook嗎?",
+
         "51": "請幫我把腳移到踏板上",
         "52": "請幫我的腳移開腳踏板",
-        "11": "讓我想一想",
-        "12": "請幫我叫媽媽"
+
+        "61": "謝謝你的鼓勵",
+        "62": "很開心跟你聊天",
+
+        "71": "請你自我介紹, 謝謝",
+        "72": "你有別的想法嗎?",
+
+        "81": "你決定就好",
+        "82": "這個主意不錯"
+    },
+    "zh_pinyin": {
+        "11": "ㄅ",
+        "12": "ㄆ",
+        "13": "ㄇ",
+        "14": "ㄈ",
+        "15": "ㄉ",
+        "16": "ㄊ",
+        "17": "ㄋ",
+        "18": "ㄌ",
+
+        "21": "ㄍ",
+        "22": "ㄎ",
+        "23": "ㄏ",
+        "24": "ㄐ",
+        "25": "ㄑ",
+        "26": "ㄒ",
+
+        "31": "ㄓ",
+        "32": "ㄔ",
+        "33": "ㄕ",
+        "34": "ㄖ",
+        "35": "ㄗ",
+        "36": "ㄘ",
+        "37": "ㄙ",
+
+        "41": "ㄧ",
+        "42": "ㄨ",
+        "43": "ㄩ",
+
+        "51": "ㄚ",
+        "52": "ㄛ",
+        "53": "ㄜ",
+        "54": "ㄝ",
+        "55": "ㄞ",
+        "56": "ㄟ",
+        "57": "ㄠ",
+        "58": "ㄡ",
+
+        "61": "ㄢ",
+        "62": "ㄣ",
+        "63": "ㄤ",
+        "64": "ㄥ",
+        "65": "ㄦ",
+
+        "71": "一聲",
+        "72": "二聲",
+        "73": "三聲",
+        "74": "四聲",
+        "75": "輕聲"
     },
     "en_sentences": {
         "11": "Let me think a minute.",
         "12": "Please call my mother.",
+        "13": "Give me a break.",
+        "14": "I don't feel well.",
+        "15": "Let me rest a minute.",
+        "16": "I want to take a drink, My cup is in the back of my chair.",
+        "17": "I'm sorry.",
+        "18": "Please help me fie the seat belt.",
+
         "21": "Can we do it this way?",
         "22": "See you later.",
+        "23": "What time is it now?",
+        "24": "Can we be friend on facebook?",
+        "25": "I have big fish to fry.",
+        "26": "Please put my foot on the foot rest.",
+        "27": "It sounds like fun.",
+        "28": "Do me a favor.",
+
         "31": "Thank you for encouraging me.",
         "32": "What's wrong?",
-        "41": "Pardon me!"
+        "33": "I appreciate you.",
+        "34": "Please introduce yourself, Thank you.",
+        "35": "Do you have another idea?",
+        "36": "Please talk slowly.",
+        "37": "Whatever you decide is fine.",
+        "38": "It's a good suggestion.",
+
+        "41": "Pardon me!",
+        "42": "I have to say, the talk to you webapp is the most awesome tool what I known."
+    },
+    "en_phonetic": {
+        "11": "A",
+        "12": "B",
+        "13": "C",
+        "14": "D",
+        "15": "E",
+        "16": "F",
+
+        "21": "H",
+        "22": "I",
+        "23": "J",
+        "24": "K",
+        "25": "L",
+        "26": "M",
+        "27": "N",
+
+        "31": "O",
+        "32": "P",
+        "33": "Q",
+        "34": "R",
+        "35": "S",
+
+        "41": "T",
+        "42": "U",
+        "43": "V",
+        "44": "W",
+        "45": "X",
+        "46": "Y",
+        "47": "Z"
     }
 }
