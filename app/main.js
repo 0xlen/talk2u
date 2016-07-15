@@ -2,6 +2,7 @@ var FirstComponent = require('./ShowTimeComponenet');
 var MessageBox = require('./MessageBox');
 var KeyPanel = require('./KeyPanel');
 var InputBox = require('./InputBox');
+var AudioTTS = require('./AudioTTS');
 
 setInterval(function() {
     ReactDOM.render(
@@ -23,36 +24,8 @@ $(function() {
 });
 
 // speech setup
-var synth = null;
-var supportSpeech = false;
-var voices = [], voiceRate = 1, voicePitch = 1, voiceLang = 'zh-TW';
-
-if (!('speechSynthesis' in window)) {
-    $('body').append('<div class="alert alert-danger" role="alert">您的裝置不支援語音功能</div>');
-} else {
-    synth = window.speechSynthesis;
-
-    if (speechSynthesis.onvoiceschanged !== undefined) {
-          speechSynthesis.onvoiceschanged = populateVoiceList;
-    }
-}
-
-function populateVoiceList() {
-    if ($('#langs').length || synth == null) return;
-
-    voices = synth.getVoices();
-
-    $('body').append('<span>語言: <select id="langs"></select></span>');
-    for(var i = 0; i < voices.length ; i++) {
-        if (voices[i].lang == voiceLang) supportSpeech = true;
-        var selected = (voices[i].lang == voiceLang) ? ' selected' : '';
-        $('select').append('<option'+ selected +'>'+ voices[i].lang +'</option>')
-    }
-
-    if (! supportSpeech) {
-        $('body').append('<div class="alert alert-danger" role="alert">您的裝置不支援中文語音</div>');
-    }
-}
+var supportSpeech = true;
+var voiceLang = 'zh-TW';
 
 var App = React.createClass({
     getInitialState: function() {
@@ -77,18 +50,14 @@ var App = React.createClass({
         });
     },
     speak: function(e) {
-        if (this.state.message == '' || ! supportSpeech || synth == null) return;
+        if (this.state.message == '' || ! supportSpeech) return;
+        var ttsPlayer = document.getElementById("tts");
 
-        var utterThis = new SpeechSynthesisUtterance(this.state.message);
-        utterThis.lang  = voiceLang;
-        utterThis.pitch = voicePitch;
-        utterThis.rate  = voicePitch;
-        synth.speak(utterThis);
-
-        utterThis.onpause = function(event) {
-            var char = event.utterance.text.charAt(event.charIndex);
-            console.log('Speech paused at character ' + event.charIndex + ' of "' +
-            event.utterance.text + '", which is "' + char + '".');
+        if (ttsPlayer != undefined) {
+            ttsPlayer.load();
+            ttsPlayer.play();
+        } else {
+            console.log('error')
         }
     },
     render: function() {
@@ -98,6 +67,7 @@ var App = React.createClass({
                 <p className="row"><KeyPanel handleClick={this.handleInputKey} /></p>
                 <p className="row"><MessageBox message={this.state.message} /></p>
                 <p className="row"><button onClick={this.speak} className="btn btn-success btn-lg btn-block">Speak!</button></p>
+                <AudioTTS lang={voiceLang} text={this.state.message} />
             </div>
         );
     }
