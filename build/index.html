@@ -26,9 +26,14 @@
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav"></ul>
-                    <ul class="nav navbar-nav navbar-right" id="switchNav">
-                        <li class="active"><a href="###" data-index="en_sentences">英文常用句<small> EN sentences</small></a></li>
-                        <li><a href="###" data-index="zh_sentences">中文常用句<small> ZH sentences</small></a></li>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" id="functionDropdown" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><small>功能選擇 Select function</small> <span class="caret"></span></a>
+                            <ul class="dropdown-menu" id="switchNav">
+                                <li class="active"><a href="###" data-lang="en" data-index="en_sentences">英文常用句<small> EN sentences</small></a></li>
+                                <li><a href="###" data-lang="zh" data-index="zh_sentences">中文常用句<small> ZH sentences</small></a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div><!--/.nav-collapse -->
             </div>

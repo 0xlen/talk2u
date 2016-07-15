@@ -16,18 +16,25 @@ $(function() {
 });
 
 $(document).on('click', '#switchNav li a', function(e) {
-    var index = $(e.target).data('index') == undefined ?
-                $(e.target).parent('a').data('index')  :
-                $(e.target).data('index');
+    var $_text = $(e.target).data('index') == undefined ?
+                 $(e.target).parent('a').text() :
+                 $(e.target).text();
 
     $('#switchNav li').removeClass('active');
-    $(e.target).parent('li').addClass('active');
+    $(e.target).parents('li').addClass('active');
+    $('#functionDropdown small').text($_text)
+
+    populateVoiceList();
 });
 
 // speech setup
 var synth = null;
 var supportSpeech = false;
-var voices = [], voiceRate = 1, voicePitch = 1, voiceLang = ['en-US', 'en_US'];
+var voices = [], voiceRate = 1, voicePitch = 1,
+    voiceLang = {
+        'en' : ['en-US', 'en_US'],
+        'zh' : ['zh-TW', 'zh_TW']
+    };
 
 if (!('speechSynthesis' in window)) {
     var msg_zh = '您的裝置不支援語音功能';
@@ -36,40 +43,55 @@ if (!('speechSynthesis' in window)) {
 } else {
     synth = window.speechSynthesis;
 
-    if (speechSynthesis.onvoiceschanged !== undefined) {
-          speechSynthesis.onvoiceschanged = populateVoiceList;
-    }
-}
-
-function populateVoiceList() {
-    if ($('#langs').length || synth == null) return;
-
-    voices = synth.getVoices();
-
     var supportLang = '<div class="form-group form-group-sm">';
     supportLang += '<label class="control-label col-sm-2">支援語言 Support Langages: </label>';
     supportLang += '<div class="col-sm-10"><select id="langs" class="form-control"></select></div>';
     supportLang += '</div>';
     $('body').append(supportLang);
 
-    for(var i = 0; i < voices.length ; i++) {
-
-        var selected = '';
-
-        if ( voiceLang.indexOf(voices[i].lang) != -1 ) {
-            selected = ' selected';
-            supportSpeech = true;
-        }
-
-        $('select').append('<option'+ selected +' val='+ voices[i].lang +'>'+ voices[i].lang +'</option>')
-    }
-
-    if (! supportSpeech) {
-        var msg_zh = '您的裝置不支援中文語音';
-        var msg_en = 'Sorry, your device does not support chinese voice.';
-        $('body').append('<div class="alert alert-danger" role="alert">'+ msg_zh + ' ' + msg_en +'</div>');
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+          speechSynthesis.onvoiceschanged = populateVoiceList;
     }
 }
+
+function populateVoiceList() {
+    if (synth == null) return;
+
+    // get support voices
+    if (voices.length <= 0) voices = synth.getVoices();
+    if ($('#langs option').length <= 0 && voices.length > 0) {
+        for(var i = 0; i < voices.length; i++) {
+            $('#langs').append('<option val='+ voices[i].lang +'>'+ voices[i].lang +'</option>')
+        }
+    }
+
+    supportSpeech = false;
+    var functionLang = $('#switchNav li.active a').data('lang');
+
+    if ( functionLang != undefined ) {
+        for (var i = 0; i< voices.length; i++) {
+            var index = $.inArray(voices[i].lang, voiceLang[functionLang]);
+            if ( index > -1 ) {
+                supportSpeech = true;
+                $('#langs')[0].selectedIndex = i;
+                $('#langs').trigger('change');
+            }
+        }
+    } else {
+    }
+
+    if (voices.length > 0 && ! supportSpeech) {
+        var msg_zh = '您的裝置不支援該語言的語音';
+        var msg_en = 'Sorry, your device does not support this voice.';
+        var closeButton = '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
+        closeButton    += '<span aria-hidden="true">&times;</span>';
+        closeButton    += '</button>';
+
+        $('#infomation').prepend('<div class="alert alert-danger alert-dismissible fade in" role="alert">'+ closeButton + msg_zh + ' ' + msg_en +'</div>');
+    }
+}
+
+populateVoiceList();
 
 var App = React.createClass({
     getInitialState: function() {
