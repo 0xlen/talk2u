@@ -24,7 +24,29 @@ $(function() {
 
 // speech setup
 var synth = window.speechSynthesis;
-var voiceRate = 1, voicePitch = 1, voiceLang = 'zh-TW';
+var supportSpeech = false;
+var voices = [], voiceRate = 1, voicePitch = 1, voiceLang = 'zh-TW';
+function populateVoiceList() {
+    if ($('#langs').length) return;
+
+    voices = synth.getVoices();
+
+    $('body').append('<span>語言: <select id="langs"></select></span>');
+    for(var i = 0; i < voices.length ; i++) {
+        if (voices[i].lang == voiceLang) supportSpeech = true;
+        var selected = (voices[i].lang == voiceLang) ? ' selected' : '';
+        $('select').append('<option'+ selected +'>'+ voices[i].lang +'</option>')
+    }
+
+    if (! supportSpeech) {
+        $('body').append('<div class="alert alert-danger" role="alert">您的裝置不支援語音功能</div>');
+    }
+}
+
+if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = populateVoiceList;
+}
+
 
 var App = React.createClass({
     getInitialState: function() {
@@ -49,7 +71,7 @@ var App = React.createClass({
         });
     },
     speak: function(e) {
-        if (this.state.message == '') return;
+        if (this.state.message == '' || ! supportSpeech) return;
 
         var utterThis = new SpeechSynthesisUtterance(this.state.message);
         utterThis.lang  = voiceLang;
