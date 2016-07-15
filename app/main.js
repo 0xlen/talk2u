@@ -16,12 +16,13 @@ $(function() {
 });
 
 $(document).on('click', '#switchNav li a', function(e) {
-    var index = $(e.target).data('index') == undefined ?
-                $(e.target).parent('a').data('index')  :
-                $(e.target).data('index');
+    var $_text = $(e.target).data('index') == undefined ?
+                 $(e.target).parent('a').text() :
+                 $(e.target).text();
 
     $('#switchNav li').removeClass('active');
-    $(e.target).parent('li').addClass('active');
+    $(e.target).parents('li').addClass('active');
+    $('#functionDropdown small').text($_text)
 });
 
 // speech setup
