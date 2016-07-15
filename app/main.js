@@ -23,11 +23,22 @@ $(function() {
 });
 
 // speech setup
-var synth = window.speechSynthesis;
+var synth = null;
 var supportSpeech = false;
 var voices = [], voiceRate = 1, voicePitch = 1, voiceLang = 'zh-TW';
+
+if (!('speechSynthesis' in window)) {
+    $('body').append('<div class="alert alert-danger" role="alert">您的裝置不支援語音功能</div>');
+} else {
+    synth = window.speechSynthesis;
+
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+          speechSynthesis.onvoiceschanged = populateVoiceList;
+    }
+}
+
 function populateVoiceList() {
-    if ($('#langs').length) return;
+    if ($('#langs').length || synth == null) return;
 
     voices = synth.getVoices();
 
@@ -39,14 +50,9 @@ function populateVoiceList() {
     }
 
     if (! supportSpeech) {
-        $('body').append('<div class="alert alert-danger" role="alert">您的裝置不支援語音功能</div>');
+        $('body').append('<div class="alert alert-danger" role="alert">您的裝置不支援中文語音</div>');
     }
 }
-
-if (speechSynthesis.onvoiceschanged !== undefined) {
-      speechSynthesis.onvoiceschanged = populateVoiceList;
-}
-
 
 var App = React.createClass({
     getInitialState: function() {
@@ -71,7 +77,7 @@ var App = React.createClass({
         });
     },
     speak: function(e) {
-        if (this.state.message == '' || ! supportSpeech) return;
+        if (this.state.message == '' || ! supportSpeech || synth == null) return;
 
         var utterThis = new SpeechSynthesisUtterance(this.state.message);
         utterThis.lang  = voiceLang;
