@@ -21,7 +21,9 @@ var supportSpeech = false;
 var voices = [], voiceRate = 1, voicePitch = 1, voiceLang = 'zh-TW';
 
 if (!('speechSynthesis' in window)) {
-    $('body').append('<div class="alert alert-danger" role="alert">您的裝置不支援語音功能</div>');
+    var msg_zh = '您的裝置不支援語音功能';
+    var msg_en = 'Sorry, your device does not support speech function.';
+    $('body').append('<div class="alert alert-danger" role="alert">'+ msg_zh + ' ' + msg_en +'</div>');
 } else {
     synth = window.speechSynthesis;
 
@@ -35,7 +37,11 @@ function populateVoiceList() {
 
     voices = synth.getVoices();
 
-    $('body').append('<span>語言: <select id="langs"></select></span>');
+    var supportLang = '<div class="form-group form-group-sm">';
+    supportLang += '<label class="control-label col-sm-2">支援語言 Support Langages: </label>';
+    supportLang += '<div class="col-sm-10"><select id="langs" class="form-control"></select></div>';
+    supportLang += '</div>';
+    $('body').append(supportLang);
     for(var i = 0; i < voices.length ; i++) {
         if (voices[i].lang == voiceLang) supportSpeech = true;
         var selected = (voices[i].lang == voiceLang) ? ' selected' : '';
@@ -43,7 +49,9 @@ function populateVoiceList() {
     }
 
     if (! supportSpeech) {
-        $('body').append('<div class="alert alert-danger" role="alert">您的裝置不支援中文語音</div>');
+        var msg_zh = '您的裝置不支援中文語音';
+        var msg_en = 'Sorry, your device does not support chinese voice.';
+        $('body').append('<div class="alert alert-danger" role="alert">'+ msg_zh + ' ' + msg_en +'</div>');
     }
 }
 
