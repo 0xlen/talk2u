@@ -1,16 +1,9 @@
-var FirstComponent = require('./ShowTimeComponenet');
 var MessageBox = require('./MessageBox');
 var KeyPanel = require('./KeyPanel');
 var InputBox = require('./InputBox');
-
-setInterval(function() {
-    ReactDOM.render(
-        <FirstComponent name="Eason" date={new Date()}>this is my firstComponent</FirstComponent>,
-        document.getElementById("infomation")
-    );
-}, 500);
-
 var table = null;
+
+// get table
 $(function() {
     $.ajax({
         url: './table.json',
