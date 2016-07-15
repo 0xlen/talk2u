@@ -68,6 +68,8 @@ var App = React.createClass({
                 userInput: newKey,
                 message: table['sentences'][newKey]
             });
+        } else if (e.target.value == 'x') {
+            this.handleClearInput(null);
         }
     },
     handleClearInput: function(e) {
