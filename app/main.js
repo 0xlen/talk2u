@@ -15,10 +15,19 @@ $(function() {
     });
 });
 
+$(document).on('click', '#switchNav li a', function(e) {
+    var index = $(e.target).data('index') == undefined ?
+                $(e.target).parent('a').data('index')  :
+                $(e.target).data('index');
+
+    $('#switchNav li').removeClass('active');
+    $(e.target).parent('li').addClass('active');
+});
+
 // speech setup
 var synth = null;
 var supportSpeech = false;
-var voices = [], voiceRate = 1, voicePitch = 1, voiceLang = 'zh-TW';
+var voices = [], voiceRate = 1, voicePitch = 1, voiceLang = ['en-US', 'en_US'];
 
 if (!('speechSynthesis' in window)) {
     var msg_zh = '您的裝置不支援語音功能';
@@ -42,10 +51,17 @@ function populateVoiceList() {
     supportLang += '<div class="col-sm-10"><select id="langs" class="form-control"></select></div>';
     supportLang += '</div>';
     $('body').append(supportLang);
+
     for(var i = 0; i < voices.length ; i++) {
-        if (voices[i].lang == voiceLang) supportSpeech = true;
-        var selected = (voices[i].lang == voiceLang) ? ' selected' : '';
-        $('select').append('<option'+ selected +'>'+ voices[i].lang +'</option>')
+
+        var selected = '';
+
+        if ( voiceLang.indexOf(voices[i].lang) != -1 ) {
+            selected = ' selected';
+            supportSpeech = true;
+        }
+
+        $('select').append('<option'+ selected +' val='+ voices[i].lang +'>'+ voices[i].lang +'</option>')
     }
 
     if (! supportSpeech) {
@@ -59,15 +75,16 @@ var App = React.createClass({
     getInitialState: function() {
         return {
             userInput: '',
-            message: ''
+            message: '',
         };
     },
     handleInputKey: function(e) {
         if (e.target.value != 'x') {
             var newKey = this.state.userInput + e.target.value;
+            var currentIndex = $('#switchNav li.active a').data('index');
             this.setState({
                 userInput: newKey,
-                message: table['sentences'][newKey]
+                message: table[currentIndex][newKey]
             });
         } else if (e.target.value == 'x') {
             this.handleClearInput(null);
@@ -83,9 +100,9 @@ var App = React.createClass({
         if (this.state.message == '' || ! supportSpeech || synth == null) return;
 
         var utterThis = new SpeechSynthesisUtterance(this.state.message);
-        utterThis.lang  = voiceLang;
+        utterThis.lang  = $('#langs').val();
         utterThis.pitch = voicePitch;
-        utterThis.rate  = voicePitch;
+        utterThis.rate  = voiceRate;
         synth.speak(utterThis);
 
         utterThis.onpause = function(event) {

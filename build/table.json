@@ -1,8 +1,17 @@
 {
-    "sentences": {
+    "zh_sentences": {
         "51": "請幫我把腳移到踏板上",
         "52": "請幫我的腳移開腳踏板",
         "11": "讓我想一想",
         "12": "請幫我叫媽媽"
+    },
+    "en_sentences": {
+        "11": "Let me think a minute.",
+        "12": "Please call my mother.",
+        "21": "Can we do it this way?",
+        "22": "See you later.",
+        "31": "Thank you for encouraging me.",
+        "32": "What's wrong?",
+        "41": "Pardon me!"
     }
 }
