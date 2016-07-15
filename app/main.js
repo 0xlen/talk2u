@@ -98,16 +98,24 @@ var App = React.createClass({
         return {
             userInput: '',
             message: '',
+            autoPlay: false
         };
     },
     handleInputKey: function(e) {
         if (e.target.value != 'x') {
             var newKey = this.state.userInput + e.target.value;
             var currentIndex = $('#switchNav li.active a').data('index');
+
             this.setState({
                 userInput: newKey,
                 message: table[currentIndex][newKey]
+            },
+            function() {
+                if (this.state.autoPlay) {
+                    this.speak(null);
+                }
             });
+
         } else if (e.target.value == 'x') {
             this.handleClearInput(null);
         }
@@ -133,6 +141,9 @@ var App = React.createClass({
             event.utterance.text + '", which is "' + char + '".');
         }
     },
+    handleAutoPlay: function(e) {
+        this.setState({ autoPlay: e.target.checked });
+    },
     render: function() {
         return (
             <div>
@@ -140,6 +151,9 @@ var App = React.createClass({
                 <p className="row"><KeyPanel handleClick={this.handleInputKey} /></p>
                 <p className="row"><MessageBox message={this.state.message} /></p>
                 <p className="row"><button onClick={this.speak} className="btn btn-success btn-lg btn-block">Speak!</button></p>
+                <p className="row text-center">
+                    <input type="checkbox" checked={this.state.autoPlay} onChange={this.handleAutoPlay} /><label> 自動播放 Auto play</label>
+                </p>
             </div>
         );
     }
