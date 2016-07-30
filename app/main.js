@@ -1,7 +1,10 @@
 var MessageBox = require('./MessageBox');
 var KeyPanel = require('./KeyPanel');
 var InputBox = require('./InputBox');
-var table = null;
+
+var KEY_LENGTH = 2;     // the max key length
+var savedIndex = ['zh_pinyin', 'en_phonetic'];
+var table      = null;
 
 // get table
 $(function() {
@@ -98,16 +101,39 @@ var App = React.createClass({
         return {
             userInput: '',
             message: '',
+            autoPlay: false
         };
     },
     handleInputKey: function(e) {
         if (e.target.value != 'x') {
-            var newKey = this.state.userInput + e.target.value;
+            var newKey = (this.state.userInput.length >= KEY_LENGTH) ? e.target.value : this.state.userInput + e.target.value;
             var currentIndex = $('#switchNav li.active a').data('index');
+
+            var messageText  = null;
+
+            // check if message need to be save
+            if ($.inArray(currentIndex, savedIndex) > -1) {
+
+                if (table[currentIndex][newKey] != undefined) {
+                    messageText = this.state.message + table[currentIndex][newKey];
+                } else {
+                    messageText = this.state.message;
+                }
+
+            } else {
+                messageText = table[currentIndex][newKey];
+            }
+
             this.setState({
                 userInput: newKey,
-                message: table[currentIndex][newKey]
+                message: messageText
+            },
+            function() {
+                if (this.state.autoPlay && table[currentIndex][newKey] != undefined) {
+                    this.speak(null);
+                }
             });
+
         } else if (e.target.value == 'x') {
             this.handleClearInput(null);
         }
@@ -121,7 +147,13 @@ var App = React.createClass({
     speak: function(e) {
         if (this.state.message == '' || ! supportSpeech || synth == null) return;
 
-        var utterThis = new SpeechSynthesisUtterance(this.state.message);
+        // check if only speak one character
+        var currentIndex = $('#switchNav li.active a').data('index');
+        var messageText  = ($.inArray(currentIndex, savedIndex) > -1)
+                           ? this.state.message.slice(-1)
+                           : this.state.message;
+
+        var utterThis   = new SpeechSynthesisUtterance(messageText);
         utterThis.lang  = $('#langs').val();
         utterThis.pitch = voicePitch;
         utterThis.rate  = voiceRate;
@@ -133,6 +165,9 @@ var App = React.createClass({
             event.utterance.text + '", which is "' + char + '".');
         }
     },
+    handleAutoPlay: function(e) {
+        this.setState({ autoPlay: e.target.checked });
+    },
     render: function() {
         return (
             <div>
@@ -140,6 +175,9 @@ var App = React.createClass({
                 <p className="row"><KeyPanel handleClick={this.handleInputKey} /></p>
                 <p className="row"><MessageBox message={this.state.message} /></p>
                 <p className="row"><button onClick={this.speak} className="btn btn-success btn-lg btn-block">Speak!</button></p>
+                <p className="row text-center">
+                    <input type="checkbox" checked={this.state.autoPlay} onChange={this.handleAutoPlay} /><label> 自動播放 Auto play</label>
+                </p>
             </div>
         );
     }
