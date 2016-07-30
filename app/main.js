@@ -1,7 +1,10 @@
 var MessageBox = require('./MessageBox');
 var KeyPanel = require('./KeyPanel');
 var InputBox = require('./InputBox');
-var table = null;
+
+var KEY_LENGTH = 2;     // the max key length
+var savedIndex = ['zh_pinyin', 'en_phonetic'];
+var table      = null;
 
 // get table
 $(function() {
@@ -103,15 +106,30 @@ var App = React.createClass({
     },
     handleInputKey: function(e) {
         if (e.target.value != 'x') {
-            var newKey = this.state.userInput + e.target.value;
+            var newKey = (this.state.userInput.length >= KEY_LENGTH) ? e.target.value : this.state.userInput + e.target.value;
             var currentIndex = $('#switchNav li.active a').data('index');
+
+            var messageText  = null;
+
+            // check if message need to be save
+            if ($.inArray(currentIndex, savedIndex) > -1) {
+
+                if (table[currentIndex][newKey] != undefined) {
+                    messageText = this.state.message + table[currentIndex][newKey];
+                } else {
+                    messageText = this.state.message;
+                }
+
+            } else {
+                messageText = table[currentIndex][newKey];
+            }
 
             this.setState({
                 userInput: newKey,
-                message: table[currentIndex][newKey]
+                message: messageText
             },
             function() {
-                if (this.state.autoPlay) {
+                if (this.state.autoPlay && table[currentIndex][newKey] != undefined) {
                     this.speak(null);
                 }
             });
@@ -129,7 +147,13 @@ var App = React.createClass({
     speak: function(e) {
         if (this.state.message == '' || ! supportSpeech || synth == null) return;
 
-        var utterThis = new SpeechSynthesisUtterance(this.state.message);
+        // check if only speak one character
+        var currentIndex = $('#switchNav li.active a').data('index');
+        var messageText  = ($.inArray(currentIndex, savedIndex) > -1)
+                           ? this.state.message.slice(-1)
+                           : this.state.message;
+
+        var utterThis   = new SpeechSynthesisUtterance(messageText);
         utterThis.lang  = $('#langs').val();
         utterThis.pitch = voicePitch;
         utterThis.rate  = voiceRate;
